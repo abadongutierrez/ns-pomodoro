@@ -1,0 +1,72 @@
+{{> header}}
+
+<style type="text/css">
+    #countdown { width: 240px; height: 45px; }
+    .pomodoro-resting {
+        border: 1px solid #ccc;
+        background-color: lightgreen;
+    }
+    .pomodoro-working  {
+        border: 1px solid #ccc;
+        background-color: lightcoral;
+    }
+</style>
+
+<h1>{{title}}</h1>
+
+<div class="pomodoro-actions">
+    <span id="current-pomodoro-button">
+        <button type="button" id="start" class="btn btn-default">Start Pomodoro</button>
+    </span>
+    <span id="next-pomodoro-button" style="display: none">
+        <form action="/tasks/{{task.task_id}}/pomodoros" method="POST">
+            <button type="submit" class="btn btn-default">New Pomodoro</button>
+        </form>
+    </span>
+</div>
+
+<!-- HTML -->
+<div id="countdown"></div>
+
+<script src="/vendor/jquery-1.11.1/js/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" href="/vendor/jquery.countdown-2.0.0/css/jquery.countdown.css">
+<script src="/vendor/jquery.countdown-2.0.0/js/jquery.plugin.min.js"></script>
+<script src="/vendor/jquery.countdown-2.0.0/js/jquery.countdown.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+// Javascript
+$(function() {
+    var audioElement = document.createElement('audio');
+    audioElement.setAttribute('src', '/audio/Buzz-SoundBible.com-1790490578.mp3');
+
+    var audioElementEnd = document.createElement('audio');
+    audioElementEnd.setAttribute('src', '/audio/Ta_Da-SoundBible.com-1884170640.mp3');
+
+    audioElement.addEventListener("ended", function() {
+        $('#countdown').countdown({until: +5, format: 'MS', onExpiry: onPomodoroRested});
+        $('#countdown').removeClass('pomodoro-working is-countdown').addClass('pomodoro-resting');
+    });
+
+    function onPomodoroWorked() {
+        $('#countdown').countdown('destroy');
+        audioElement.play();         
+    }
+
+    function onPomodoroRested() {
+        $('#countdown').countdown('destroy');
+        $.post("/tasks/{{pomodoro.task_id}}/pomodoros/{{pomodoro.pomodoro_id}}/end");
+        audioElementEnd.play();
+        $('#current-pomodoro-button').hide();
+        $('#next-pomodoro-button').show();
+    }
+
+    $('#start').click(function() {
+        $.post("/tasks/{{pomodoro.task_id}}/pomodoros/{{pomodoro.pomodoro_id}}/start", {}, function() {
+            $('#countdown').countdown({until: +10, format: 'MS', onExpiry: onPomodoroWorked});
+            $('#countdown').removeClass('is-countdown').addClass('pomodoro-working');
+        }, "text");
+    })
+});
+</script>
+
+{{> footer}}
