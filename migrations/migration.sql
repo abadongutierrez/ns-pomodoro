@@ -9,8 +9,8 @@ CREATE TABLE public.task (
 CREATE TABLE public.pomodoro (
     pomodoro_id serial PRIMARY KEY,
     task_id integer NOT NULL,
-    entered_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-    started_date TIMESTAMP WITHOUT TIME ZONE,
+    -- Pomodoro created is a pomodoro started
+    started_date NOT NULL TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     ended_date TIMESTAMP WITHOUT TIME ZONE,
     
     CONSTRAINT pomodoro_task_fk FOREIGN KEY (task_id)
