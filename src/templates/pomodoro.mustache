@@ -43,7 +43,7 @@ $(function() {
     audioElementEnd.setAttribute('src', '/audio/Ta_Da-SoundBible.com-1884170640.mp3');
 
     audioElement.addEventListener("ended", function() {
-        $('#countdown').countdown({until: +5, format: 'MS', onExpiry: onPomodoroRested});
+        $('#countdown').countdown({until: +300, format: 'MS', onExpiry: onPomodoroRested});
         $('#countdown').removeClass('pomodoro-working is-countdown').addClass('pomodoro-resting');
     });
 
@@ -62,7 +62,7 @@ $(function() {
 
     $('#start').click(function() {
         $.post("/tasks/{{pomodoro.task_id}}/pomodoros/{{pomodoro.pomodoro_id}}/start", {}, function() {
-            $('#countdown').countdown({until: +10, format: 'MS', onExpiry: onPomodoroWorked});
+            $('#countdown').countdown({until: +1500, format: 'MS', onExpiry: onPomodoroWorked});
             $('#countdown').removeClass('is-countdown').addClass('pomodoro-working');
         }, "text");
     })

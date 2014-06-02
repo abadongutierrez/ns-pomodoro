@@ -1,0 +1,17 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.postgresql:postgresql:9.3-1101-jdbc41'
+        classpath 'org.flywaydb:flyway-gradle-plugin:3.0'
+    }
+}
+
+apply plugin: 'flyway'
+apply plugin: 'java'
+
+flyway {
+    url = 'jdbc:postgresql://localhost/ns_pomodoro'
+    user = 'rgutierrez'
+}
