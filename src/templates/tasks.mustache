@@ -1,39 +1,50 @@
 {{> header}}
 
-<div class="title">{{title}}</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="title">{{title}}</div>
 
-<div id="div-new-task">
-    <form class="form-inline" role="form" action="tasks" method="POST">
-      <div class="form-group">
-        <input type="text" class="form-control" name="name" placeholder="Enter Task Name">
-      </div>
-      <button type="submit" class="btn btn-default">Add</button>
-    </form>
-</div>
-
-<p>These are your tasks:</p>
-
-<ul class="list-group">
-{{#tasks}}
-    <li class="list-group-item">
-        <div class="task">
-            <h4 class="list-group-item-heading">{{name}} <small>{{entered_date}}</small></h4>
-            <p class="list-group-item-text">Total pomodoros: </p>
-            <span class="task-actions right">
-                <form action="/tasks/{{task_id}}/pomodoros" class="form-in-line" method="POST">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-lg btn-xs">
-                            <span class="glyphicon glyphicon-unchecked"></span> Done
-                        </button>
-                        <button type="submit" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-time"></span> New Pomodoro
-                        </button>
-                    </div>
+            <div id="div-new-task">
+                <form class="form-inline" role="form" action="tasks" method="POST">
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="name" placeholder="Enter Task Name">
+                  </div>
+                  <button type="submit" class="btn btn-default">Add</button>
                 </form>
-            </span>
+            </div>
         </div>
-    </li>
-{{/tasks}}
-</ul>
+        <div class="col-md-2"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <ul class="list-group">
+            {{#tasks}}
+                <li class="list-group-item">
+                    <div class="task">
+                        <h4 class="list-group-item-heading">{{name}} <small>{{entered_date}}</small></h4>
+                        <p class="list-group-item-text">Total pomodoros: </p>
+                        <span class="task-actions right">
+                            <form action="/tasks/{{task_id}}/pomodoros" class="form-in-line" method="POST">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-lg btn-xs">
+                                        <span class="glyphicon glyphicon-unchecked"></span> Done
+                                    </button>
+                                    <button type="submit" class="btn btn-default btn-xs">
+                                        <span class="glyphicon glyphicon-time"></span> New Pomodoro
+                                    </button>
+                                </div>
+                            </form>
+                        </span>
+                    </div>
+                </li>
+            {{/tasks}}
+            </ul>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
 
 {{> footer}}
