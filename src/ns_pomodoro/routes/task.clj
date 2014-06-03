@@ -7,7 +7,10 @@
     (layout/render-layout "tasks" {:title "Tasks" :tasks (tasks/read-tasks)}))
 
 (defn render-pomodoro [pomodoro task]
-    (layout/render-layout "pomodoro" {:title (str "Pomodoro for Task '" (:name task) "'") :pomodoro pomodoro :task task}))
+    (layout/render-layout "pomodoro" {:title (str "Pomodoro for Task '" (:name task) "'") 
+                                      :pomodoro pomodoro 
+                                      :task task 
+                                      :total-pomodoros (count (:pomodoros task))}))
 
 (defn list-tasks []
     (render-tasks))
@@ -20,7 +23,7 @@
 (defn create-pomodoro [task-id]
     (do
         ; first because create-pomodoro return a sequence with a map of the new row
-        (render-pomodoro (first (tasks/create-pomodoro task-id)) (tasks/get-task task-id))))
+        (render-pomodoro (first (tasks/create-pomodoro task-id)) (tasks/get-task-with-pomodoros task-id))))
 
 (defn start-pomodoro [pomodoro-id]
     (do

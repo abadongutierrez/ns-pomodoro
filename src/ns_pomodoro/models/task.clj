@@ -8,9 +8,10 @@
             ["SELECT * FROM task ORDER BY entered_date DESC"])))
 
 (defn get-task [task-id]
-    (first (sql/with-db-transaction [conn db/db-connection]
-        (sql/query conn 
-            ["SELECT * FROM task WHERE task_id = ?" (Long/valueOf task-id)]))))
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn 
+                ["SELECT * FROM task WHERE task_id = ?" (Long/valueOf task-id)]))))
 
 (defn create-task [name]
     (sql/with-db-transaction [conn db/db-connection]
@@ -33,3 +34,12 @@
         (sql/update! conn :pomodoro
             {:ended_date (new java.sql.Timestamp (.getTime (new java.util.Date)))}
             ["pomodoro_id = ? AND started_date IS NOT NULL" (Long/valueOf pomodoro-id)])))
+
+(defn get-completed-pomodoros [task-id]
+    (sql/with-db-transaction [conn db/db-connection]
+        (sql/query conn
+            ["SELECT * FROM pomodoro WHERE task_id = ? AND started_date IS NOT NULL AND ended_date IS NOT NULL" (Long/valueOf task-id)])))
+
+(defn get-task-with-pomodoros [task-id]
+    (let [task (get-task task-id) pomodoros (get-completed-pomodoros task-id)]
+        (assoc task :pomodoros pomodoros)))
