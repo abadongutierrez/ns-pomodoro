@@ -49,26 +49,29 @@
 <script type="text/javascript" charset="utf-8">
 // Javascript
 $(function() {
-    var audioElement = document.createElement('audio');
-    audioElement.setAttribute('src', '/audio/Buzz-SoundBible.com-1790490578.mp3');
+    window.isActive = true;
+    $(window).focus(function() { this.isActive = true; });
+    $(window).blur(function() { this.isActive = false; });
 
-    var audioElementEnd = document.createElement('audio');
-    audioElementEnd.setAttribute('src', '/audio/Ta_Da-SoundBible.com-1884170640.mp3');
-
-    audioElement.addEventListener("ended", function() {
-        $('#countdown').countdown({until: +300, format: 'MS', onExpiry: onPomodoroRested});
-        $('#countdown').removeClass('pomodoro-working is-countdown').addClass('pomodoro-resting');
-    });
+    //var buzzSound = new Audio('/audio/Buzz-SoundBible.com-1790490578.mp3');
+    //var taDaSound = new Audio('/audio/Ta_Da-SoundBible.com-1884170640.mp3');
 
     function onPomodoroWorked() {
         $('#countdown').countdown('destroy');
-        audioElement.play();         
+        console.log('isActive ' + isActive);
+        //var playSoundWorker = new Worker('/js/play-sound.js');
+        //playSoundWorker.postMessage(buzzSound);
+        // 300 = 5 minutes
+        $('#countdown').countdown({until: +3, format: 'MS', onExpiry: onPomodoroRested});
+        $('#countdown').removeClass('pomodoro-working is-countdown').addClass('pomodoro-resting');         
     }
 
     function onPomodoroRested() {
         $('#countdown').countdown('destroy');
         $.post("/tasks/{{pomodoro.task_id}}/pomodoros/{{pomodoro.pomodoro_id}}/end");
-        audioElementEnd.play();
+        console.log('isActive ' + isActive);
+        //var playSoundWorker = new Worker('/js/play-sound.js');
+        //playSoundWorker.postMessage(taDaSound);
         $('#current-pomodoro-button').hide();
         $('#next-pomodoro-button').show();
     }
@@ -76,7 +79,8 @@ $(function() {
     $('#start').click(function() {
         $('#start').fadeOut();
         $.post("/tasks/{{pomodoro.task_id}}/pomodoros/{{pomodoro.pomodoro_id}}/start", {}, function() {
-            $('#countdown').countdown({until: +1500, format: 'MS', onExpiry: onPomodoroWorked});
+            // 1500 = 25 minutes
+            $('#countdown').countdown({until: +5, format: 'MS', onExpiry: onPomodoroWorked});
             $('#countdown').removeClass('is-countdown').addClass('pomodoro-working');
         }, "text");
     })

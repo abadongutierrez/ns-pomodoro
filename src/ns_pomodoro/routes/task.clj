@@ -4,10 +4,10 @@
             [ns-pomodoro.views.layout :as layout]))
 
 (defn render-tasks []
-    (layout/render-layout "tasks" {:title "Tasks" :tasks (tasks/read-tasks)}))
+    (layout/render-layout "tasks/list" {:title "Tasks" :tasks (tasks/read-tasks)}))
 
 (defn render-pomodoro [pomodoro task]
-    (layout/render-layout "pomodoro" {:title (str "Pomodoro for Task '" (:name task) "'") 
+    (layout/render-layout "pomodoros/show" {:title (str "Pomodoro for Task '" (:name task) "'") 
                                       :pomodoro pomodoro 
                                       :task task 
                                       :total-pomodoros (count (:pomodoros task))}))
