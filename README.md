@@ -34,6 +34,14 @@ To reload when something has changed:
 user=> (use 'ns-pomodoro.repl :reload)
 ```
 
+### Referencies
+
+* [Noir Documentation](http://www.webnoir.org/autodoc/1.0.0/index.html)
+* [Bootstrap](http://getbootstrap.com/)
+* [Clostache](https://github.com/fhd/clostache) {{ mustache }} for Clojure
+* [Clojure Docs](http://clojuredocs.org/)
+* [PostgreSQL](http://www.postgresql.org/docs/9.1/static/index.html) 9.1 Documentation
+
 ## License
 
 Copyright © 2014 FIXME
