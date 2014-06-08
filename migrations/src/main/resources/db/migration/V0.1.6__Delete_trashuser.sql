@@ -1,0 +1,1 @@
+DELETE FROM public.nsp_user WHERE username = 'trashuser';

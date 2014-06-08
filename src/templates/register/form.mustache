@@ -2,6 +2,7 @@
 
 <div class="title">{{title}}</div>
 
+<!-- TODO Change the use of errors.<field>.is to errors.<field> -->
 <div>
     <form role="form" action="/register" method="POST" novalidate>
         <div class="form-group {{#errors.username.is}}has-error{{/errors.username.is}}">

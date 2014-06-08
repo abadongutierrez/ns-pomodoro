@@ -3,22 +3,20 @@
             [liberator.core :refer [defresource resource request-method-in]]
             [cheshire.core :refer [generate-string]]
             [ns-pomodoro.models.task :as tasks]
-            [ns-pomodoro.views.layout :as layout]))
+            [ns-pomodoro.views.layout :as layout]
+            [ns-pomodoro.views.util :as util]))
 
 (defn render-tasks []
-    (layout/render-layout "tasks/list" {:title "Tasks" :tasks (tasks/read-tasks)}))
+    (layout/render-layout "tasks/list" {:title "Tasks" :tasks (tasks/read-tasks (util/user-id))}))
 
 (defn render-pomodoro [task]
     (layout/render-layout "pomodoros/show" {:title (str "Pomodoro for Task '" (:name task) "'") 
                                       :task task 
                                       :total-pomodoros (count (:pomodoros task))}))
 
-(defn list-tasks []
-    (render-tasks))
-
 (defn create-task [name]
     (do
-        (tasks/create-task name)
+        (tasks/create-task name (util/user-id))
         (render-tasks)))
 
 ; Render the page to create a new pomodoro for the specified task
@@ -50,7 +48,7 @@
             (generate-string (tasks/get-pomodoro pomodoro-id))))
 
 (defroutes task-routes
-  (GET "/tasks" [] (list-tasks))
+  (GET "/tasks" [] (render-tasks))
   (POST "/tasks" [name] (create-task name))
   ; TODO do not create pomodoro until user starts it
   (POST "/tasks/:task-id/pomodoros" [task-id] (new-pomodoro task-id))

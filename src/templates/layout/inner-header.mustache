@@ -4,3 +4,31 @@
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
+
+        {{#flash.success}}
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>{{flash.success.message.strong}}</strong> {{flash.success.message.text}}
+            </div>
+        {{/flash.success}}
+
+        {{#flash.info}}
+            <div class="alert alert-info alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>{{flash.info.message.strong}}</strong> {{flash.info.message.text}}
+            </div>
+        {{/flash.info}}
+
+        {{#flash.warning}}
+            <div class="alert alert-warning alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>{{flash.warning.message.strong}}</strong> {{flash.warning.message.text}}
+            </div>
+        {{/flash.warning}}
+
+        {{#flash.danger}}
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>{{flash.danger.message.strong}}</strong> {{flash.danger.message.text}}
+            </div>
+        {{/flash.danger}}
