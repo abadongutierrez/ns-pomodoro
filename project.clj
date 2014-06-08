@@ -9,7 +9,9 @@
                  [org.clojure/java.jdbc "0.3.3"]
                  [lib-noir "0.8.3"]
                  [de.ubercode.clostache/clostache "1.4.0"]
-                 [clj-time "0.7.0"]]
+                 [clj-time "0.7.0"]
+                 [liberator "0.11.0"]
+                 [cheshire "5.3.1"]]
   :plugins [[lein-ring "0.8.10"]]
   :ring {:handler ns-pomodoro.handler/app
          :init ns-pomodoro.handler/init

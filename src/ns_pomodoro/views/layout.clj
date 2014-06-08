@@ -22,4 +22,4 @@
             partials)))
 
 (defn render-layout [template data]
-    (render-page template data [:header :footer]))
+    (render-page template data [:header :footer :inner-header :inner-footer]))
