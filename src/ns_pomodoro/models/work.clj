@@ -14,6 +14,6 @@
                 (conj days day)
                 (recur (.plusDays day 1) (conj days day))))))
 
-(defn get-week-pomodoros []
+(defn get-week-pomodoros [user-id]
     (let [week (get-week)]
-        (map #(assoc {:pomodoros (tasks/get-pomodoros-per-day %)} :day %) week)))
+        (map #(assoc {:pomodoros (tasks/get-pomodoros-per-day % user-id)} :day %) week)))

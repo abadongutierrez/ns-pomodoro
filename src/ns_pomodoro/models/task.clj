@@ -56,12 +56,15 @@
                 "ended_date IS NOT NULL")])))
 
 ; date : org.joda.time.LocalDate
-(defn get-pomodoros-per-day [date]
+(defn get-pomodoros-per-day [date user-id]
     (sql/with-db-transaction [conn db/db-connection]
         (let [pomodoros (sql/query conn
-                [(str "SELECT * FROM pomodoro WHERE started_date BETWEEN '"
-                    (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 00:00:00' AND '"
-                    (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 23:59:59'")])]
+                [(str "SELECT pomodoro.* FROM pomodoro AS pomodoro"
+                      " INNER JOIN task AS task ON (task.task_id = pomodoro.task_id)" 
+                      " WHERE pomodoro.started_date BETWEEN '"
+                      (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 00:00:00' AND '"
+                      (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 23:59:59'"
+                      " AND task.user_id = ?") user-id])]
             (vec (map #(assoc % :task (get-task (:task_id %))) pomodoros)))))
 
 (defn get-task-with-pomodoros [task-id]

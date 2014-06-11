@@ -7,6 +7,8 @@
     {{#pomodoros}}
         <li>      
             {{#task}}{{name}} [{{task_id}}]{{/task}} - {{started_date}}, {{ended_date}}
+            {{#ended_date}}<span class="label label-success">COMPLETED</span>{{/ended_date}}
+            {{^ended_date}}<span class="label label-danger">INCOMPLETED</span>{{/ended_date}}
         </li>
     {{/pomodoros}}
     </ul>
