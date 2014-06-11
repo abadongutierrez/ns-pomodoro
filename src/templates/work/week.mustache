@@ -1,0 +1,16 @@
+{{> inner-header}}
+
+{{#week}}
+<div>
+    <h4>{{day}}</h4>
+    <ul>
+    {{#pomodoros}}
+        <li>      
+            {{#task}}{{name}} [{{task_id}}]{{/task}} - {{started_date}}, {{ended_date}}
+        </li>
+    {{/pomodoros}}
+    </ul>
+</div>
+{{/week}}
+
+{{> inner-footer}}

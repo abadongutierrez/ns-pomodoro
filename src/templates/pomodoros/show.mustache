@@ -56,7 +56,7 @@ $(function() {
         //var playSoundWorker = new Worker('/js/play-sound.js');
         //playSoundWorker.postMessage(buzzSound);
         // 300 = 5 minutes
-        $('#countdown').countdown({until: +3, format: 'MS', onExpiry: onPomodoroRested});
+        $('#countdown').countdown({until: +300, format: 'MS', onExpiry: onPomodoroRested});
         $('#countdown').removeClass('pomodoro-working is-countdown').addClass('pomodoro-resting');         
     }
 
@@ -75,7 +75,7 @@ $(function() {
         $.post("/tasks/{{task.task_id}}/pomodoros/start", {}, function(data) {
             pomodoroId = data.pomodoro_id;
             // 1500 = 25 minutes
-            $('#countdown').countdown({until: +5, format: 'MS', onExpiry: onPomodoroWorked});
+            $('#countdown').countdown({until: +1500, format: 'MS', onExpiry: onPomodoroWorked});
             $('#countdown').removeClass('is-countdown').addClass('pomodoro-working');
         }, "json");
     })

@@ -4,6 +4,7 @@
             [noir.util.middleware :as noir-middleware]
             [ns-pomodoro.routes.home :refer [home-routes]]
             [ns-pomodoro.routes.task :refer [task-routes]]
+            [ns-pomodoro.routes.work :refer [work-routes]]
             [ns-pomodoro.routes.auth :refer [auth-routes]]))
 
 (defn init []
@@ -16,6 +17,6 @@
   (route/resources "/")
   (route/not-found "Not Found"))
 
-(def app (noir-middleware/app-handler [home-routes task-routes auth-routes app-routes]))
+(def app (noir-middleware/app-handler [home-routes task-routes work-routes auth-routes app-routes]))
 
 

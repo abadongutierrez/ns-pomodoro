@@ -1,5 +1,6 @@
 (ns ns-pomodoro.models.task
     (:require [clojure.java.jdbc :as sql]
+              [clj-time.format :as f]
               [ns-pomodoro.models.db :as db]
               [ns-pomodoro.models.util :as util]))
 
@@ -42,6 +43,26 @@
     (sql/with-db-transaction [conn db/db-connection]
         (sql/query conn
             ["SELECT * FROM pomodoro WHERE task_id = ? AND started_date IS NOT NULL AND ended_date IS NOT NULL" (util/get-long task-id)])))
+
+(def custom-formatter (f/formatter "yyyy-MM-dd"))
+
+; date : org.joda.time.LocalDate
+(defn get-completed-pomodoros-per-day [date]
+    (sql/with-db-transaction [conn db/db-connection]
+        (sql/query conn
+            [(str "SELECT * FROM pomodoro WHERE started_date BETWEEN '"
+                (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 00:00:00' AND '"
+                (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 23:59:59' AND "
+                "ended_date IS NOT NULL")])))
+
+; date : org.joda.time.LocalDate
+(defn get-pomodoros-per-day [date]
+    (sql/with-db-transaction [conn db/db-connection]
+        (let [pomodoros (sql/query conn
+                [(str "SELECT * FROM pomodoro WHERE started_date BETWEEN '"
+                    (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 00:00:00' AND '"
+                    (f/unparse custom-formatter (.toDateTimeAtStartOfDay date)) " 23:59:59'")])]
+            (vec (map #(assoc % :task (get-task (:task_id %))) pomodoros)))))
 
 (defn get-task-with-pomodoros [task-id]
     (let [task (get-task task-id) pomodoros (get-completed-pomodoros task-id)]
