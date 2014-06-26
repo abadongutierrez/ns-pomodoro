@@ -41,7 +41,17 @@
                 {::id (:pomodoro_id new-pomodoro)}))
     :handle-created
         (fn [context]
-            (generate-string (tasks/get-pomodoro (::id context)))))
+            (generate-string { ; TODO extract this to a function to create the success message
+                    :meta {
+                        :error false
+                        :message ""
+                    }
+                    :data {
+                        :pomodoro (tasks/get-pomodoro (::id context))
+                        :work_time_left (tasks/get-pomodoro-worktime-length)
+                        :rest_time_left (tasks/get-pomodoro-resttime-length)
+                    }
+                })))
 
 ; Resource to end a existing pomodoro
 (defresource end-pomodoro [task-id pomodoro-id]
@@ -52,7 +62,13 @@
             (tasks/end-pomodoro pomodoro-id))
     :handle-created
         (fn [context]
-            (generate-string (tasks/get-pomodoro pomodoro-id))))
+            (generate-string { ; TODO extract this to a function to create the success message
+                    :meta {
+                        :error false
+                        :message ""
+                    }
+                    :data {}
+                })))
 
 (defroutes task-routes
   (GET "/tasks" [] (render-tasks))

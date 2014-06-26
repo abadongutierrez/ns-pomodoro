@@ -1,6 +1,7 @@
 (ns ns-pomodoro.models.task
     (:require [clojure.java.jdbc :as sql]
               [clj-time.format :as f]
+              [clj-time.core :as t]
               [ns-pomodoro.models.db :as db]
               [ns-pomodoro.models.util :as util]))
 
@@ -70,3 +71,23 @@
 (defn get-task-with-pomodoros [task-id]
     (let [task (get-task task-id) pomodoros (get-completed-pomodoros task-id)]
         (assoc task :pomodoros pomodoros)))
+
+(defn count-todays-pomodoros
+    "Counts today's pomodoros" 
+    []
+    (let [pomodoros (get-completed-pomodoros-per-day (t/today))]
+        (count pomodoros)))
+
+(defn get-pomodoro-worktime-length
+    "Returns the length of the working time for a Pomodoro"
+    []
+    (* 60 25))
+
+(defn get-pomodoro-resttime-length
+    "Returns the length of the resting time for a Pomodoro. Every 4 pomodoros the resting time is longer"
+    []
+    (let [total-pomodoros (count-todays-pomodoros)]
+        (if (= 0 (mod total-pomodoros 4))
+            (* 60 15)
+            (* 60 5))))
+

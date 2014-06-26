@@ -53,7 +53,7 @@
 <script type="text/javascript" charset="utf-8">
 
 function show(message) {
-    notify.createNotification("NS Pomodor Notification", {body:message, icon: "alert.ico"})
+    notify.createNotification("NS Pomodoro Notification", {body:message, icon: "alert.ico"})
 }
 
 // Javascript
@@ -61,16 +61,13 @@ $(function() {
     var pomodoroId = null, //
         worker = null;
 
-    console.log(notify.permissionLevel());
     if (notify.permissionLevel() === notify.PERMISSION_DEFAULT) {
-        console.log('solicitando permison');
+        // ask user for permission
         notify.requestPermission(function() {
-            console.log("Que paso?");
-            console.log(notify.permissionLevel());
+            //
         });
     }
     else if (notify.permissionLevel() === notify.PERMISSION_GRANTED) {
-        show("Hey");
     }
 
     $('#start').click(function() {
@@ -78,13 +75,13 @@ $(function() {
         $.post("/tasks/{{task.task_id}}/pomodoros/start", {}, function(data) {
             var currPomodorSpec = {
                 task: {
-                    id: data.task_id
+                    id: data.data.pomodoro.task_id
                 },
                 pomodoro: {
-                    id: data.pomodoro_id
+                    id: data.data.pomodoro.pomodoro_id
                 },
-                workTimeLeft: 1500, //ta.worktimeleft;
-                restTimeLeft: 300  //data.resttimeleft
+                workTimeLeft: data.data.work_time_left,
+                restTimeLeft: data.data.rest_time_left
             };
 
             // create worker
