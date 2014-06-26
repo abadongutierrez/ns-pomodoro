@@ -90,14 +90,18 @@ $(function() {
             worker.addEventListener('message', function(event) {
                 if (parseInt(event.data) == -1) {
                     alert('Pomodoro already finishied, please start a new one.');
+                    $('#start').fadeIn();
                 }
                 else {
                     $("#countdown").text(event.data.timerStr);
-                    if (event.data.timerStr === "00:00" && event.data.type === "working") {
-                        show("Pomodoro Finishied!, take a rest.");
-                    }
-                    else if (event.data.timerStr === "00:00" && event.data.type === "resting") {
-                        show("Enough resting, go back to work."); 
+                    if (event.data.timerStr === "00:00") {
+                        if (event.data.type === "working") {
+                            show("Pomodoro Finished!, take a rest.");
+                        }
+                        else if (event.data.type === "resting") {
+                            show("Enough resting, go back to work.");
+                            $('#start').fadeIn();
+                        }
                     }
                 }
             });
