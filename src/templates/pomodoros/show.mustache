@@ -10,6 +10,22 @@
         border: 1px solid #ccc;
         background-color: lightcoral;
     }
+
+    .timer {
+        width:200px;
+        margin-left:auto;
+        margin-right: auto;
+        margin-top: 10px;
+        border:1px dotted gray;
+                    
+        /*font-family: 'Open Sans', sans-serif, Palatino;*/
+        font-size: 32px;
+        font-weight: 300;
+        text-align: center;
+        text-decoration: none;
+        letter-spacing: 1px;
+
+    }
 </style>
 
 <div class="title-pomodoro">{{title}}</div>
@@ -32,51 +48,65 @@
 </div>
 
 <!-- HTML -->
-<div id="countdown"></div>
-
-<link rel="stylesheet" href="/vendor/jquery.countdown-2.0.0/css/jquery.countdown.css">
-<script src="/vendor/jquery.countdown-2.0.0/js/jquery.plugin.min.js"></script>
-<script src="/vendor/jquery.countdown-2.0.0/js/jquery.countdown.min.js"></script>
+<div id="countdown" class="timer pomodoro-working">00:00</div>
 
 <script type="text/javascript" charset="utf-8">
+
+function show(message) {
+    notify.createNotification("NS Pomodor Notification", {body:message, icon: "alert.ico"})
+}
+
 // Javascript
 $(function() {
-    var pomodoroId = null;
+    var pomodoroId = null, //
+        worker = null;
 
-    window.isActive = true;
-    $(window).focus(function() { this.isActive = true; });
-    $(window).blur(function() { this.isActive = false; });
-
-    //var buzzSound = new Audio('/audio/Buzz-SoundBible.com-1790490578.mp3');
-    //var taDaSound = new Audio('/audio/Ta_Da-SoundBible.com-1884170640.mp3');
-
-    function onPomodoroWorked() {
-        $('#countdown').countdown('destroy');
-        console.log('isActive ' + isActive);
-        //var playSoundWorker = new Worker('/js/play-sound.js');
-        //playSoundWorker.postMessage(buzzSound);
-        // 300 = 5 minutes
-        $('#countdown').countdown({until: +300, format: 'MS', onExpiry: onPomodoroRested});
-        $('#countdown').removeClass('pomodoro-working is-countdown').addClass('pomodoro-resting');         
+    console.log(notify.permissionLevel());
+    if (notify.permissionLevel() === notify.PERMISSION_DEFAULT) {
+        console.log('solicitando permison');
+        notify.requestPermission(function() {
+            console.log("Que paso?");
+            console.log(notify.permissionLevel());
+        });
     }
-
-    function onPomodoroRested() {
-        $('#countdown').countdown('destroy');
-        $.post("/tasks/{{task.task_id}}/pomodoros/" + pomodoroId + "/end");
-        console.log('isActive ' + isActive);
-        //var playSoundWorker = new Worker('/js/play-sound.js');
-        //playSoundWorker.postMessage(taDaSound);
-        $('#current-pomodoro-button').hide();
-        $('#next-pomodoro-button').show();
+    else if (notify.permissionLevel() === notify.PERMISSION_GRANTED) {
+        show("Hey");
     }
 
     $('#start').click(function() {
         $('#start').fadeOut();
         $.post("/tasks/{{task.task_id}}/pomodoros/start", {}, function(data) {
-            pomodoroId = data.pomodoro_id;
-            // 1500 = 25 minutes
-            $('#countdown').countdown({until: +1500, format: 'MS', onExpiry: onPomodoroWorked});
-            $('#countdown').removeClass('is-countdown').addClass('pomodoro-working');
+            var currPomodorSpec = {
+                task: {
+                    id: data.task_id
+                },
+                pomodoro: {
+                    id: data.pomodoro_id
+                },
+                workTimeLeft: 1500, //ta.worktimeleft;
+                restTimeLeft: 300  //data.resttimeleft
+            };
+
+            // create worker
+            worker = new Worker("/js/pomodoroWorker.js");
+
+            worker.addEventListener('message', function(event) {
+                if (parseInt(event.data) == -1) {
+                    alert('Pomodoro already finishied, please start a new one.');
+                }
+                else {
+                    $("#countdown").text(event.data.timerStr);
+                    if (event.data.timerStr === "00:00" && event.data.type === "working") {
+                        show("Pomodoro Finishied!, take a rest.");
+                    }
+                    else if (event.data.timerStr === "00:00" && event.data.type === "resting") {
+                        show("Enough resting, go back to work."); 
+                    }
+                }
+            });
+
+            // send initial message to worker and start
+            worker.postMessage({pomodoroSpec: currPomodorSpec});
         }, "json");
     })
 });

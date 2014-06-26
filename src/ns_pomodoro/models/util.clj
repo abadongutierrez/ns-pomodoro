@@ -5,3 +5,6 @@
 ; Util method to force value to be Long
 (defn get-long [value]
     (if (instance? Long value) value (Long/valueOf (str value))))
+
+(defn get-int [value]
+    (if (instance? Integer value) value (Integer/valueOf (str value))))

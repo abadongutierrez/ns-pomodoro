@@ -4,10 +4,17 @@
             [cheshire.core :refer [generate-string]]
             [ns-pomodoro.models.task :as tasks]
             [ns-pomodoro.views.layout :as layout]
-            [ns-pomodoro.views.util :as util]))
+            [ns-pomodoro.views.util :as util]
+            [clj-time.core :as t]))
 
 (defn render-tasks []
-    (layout/render-layout "tasks/list" {:title "Tasks" :tasks (tasks/read-tasks (util/user-id))}))
+    (let [to (.getMillis (t/date-time 2014 06 18 23 59 59))
+          now (.getMillis (t/now))
+          until (- to now)]
+      (layout/render-layout "tasks/list" {
+        :title "Tasks" 
+        :tasks (tasks/read-tasks (util/user-id))
+        :timeleft until})))
 
 (defn render-pomodoro [task]
     (layout/render-layout "pomodoros/show" {:title (str "Pomodoro for Task '" (:name task) "'") 

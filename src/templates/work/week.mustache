@@ -1,5 +1,11 @@
 {{> inner-header}}
 
+<div class="btn-group btn-group-xs">
+  <a href="/work/week?offset={{offset-backward}}" class="btn btn-default"><span class="glyphicon glyphicon-backward"></a>
+  <a href="/work/week?offset=0" class="btn btn-default">This Week</a>
+  <a href="/work/week?offset={{offset-forward}}" class="btn btn-default"><span class="glyphicon glyphicon-forward"></a>
+</div>
+
 {{#week}}
 <div>
     <h4>{{day}}</h4>

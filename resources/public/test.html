@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="utf-8" />
+ <title>Timer</title>
+ 
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,300,400' rel='stylesheet' type='text/css'> 
+ <style type="text/css">
+
+        .header
+        {
+            width:280px;
+            margin-left:auto;
+            margin-right: auto;
+            margin-top: 50px;
+                        
+            font-family: 'Open Sans', sans-serif, Palatino;
+            font-size: 24px;
+            font-weight: 300;
+            text-align: left;
+            text-decoration: none;
+            letter-spacing: 1px;
+            color: gray;
+
+        }
+
+        .timer
+        {
+            width:200px;
+            margin-left:auto;
+            margin-right: auto;
+            margin-top: 10px;
+            padding: 40px;
+            border:1px dotted gray;
+                        
+            font-family: 'Open Sans', sans-serif, Palatino;
+            font-size: 32px;
+            font-weight: 300;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 1px;
+            color: gray;
+
+        }
+
+        .buttons
+        {
+            width:280px;
+            margin-left:auto;
+            margin-right: auto;
+            margin-top: 20px;
+        }
+        
+        button
+        {
+            width:100px;
+        
+            font-family: 'Open Sans', sans-serif, Palatino;
+            font-size: 18px;
+            font-weight: 300;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 1px;
+            color: gray;            
+        }
+        
+        #button1
+        {
+            float:left;
+            margin-left: 25px;
+        }
+        
+        #button2
+        {
+            float:right;
+            margin-right:25px;
+        }        
+ 
+ </style> 
+
+    <script src="/vendor/jquery-1.11.1/js/jquery-1.11.1.min.js"></script> 
+</head>
+<body>
+
+    <div class="header">A simple timer:</div>
+
+    <div class="timer" id="timer">00:00</div>   
+    <div class="buttons">
+        <button onclick="startTimer()" id="button1">Start</button>
+        <button onclick="stopTimer()" id = "button2">Stop</button>
+    </div>
+
+</body>
+
+<script>
+
+var worker = null; // initialize variable
+
+function isWorkersSupported() {
+    return typeof(Worker) !== "undefined"; 
+}
+
+// function to start the timer
+function startTimer() {
+    // First check whether Web Workers are supported
+    if (isWorkersSupported()) {
+        // Check whether Web Worker has been created. If not, create a new Web Worker based on the Javascript file simpletimer.js
+        if (worker == null) {
+            w = new Worker("simpletimer.js");
+        }
+
+        worker.addEventListener('message', function(event) {
+            // Update timer div with output from Web Worker
+            document.getElementById("timer").innerHTML = event.data;    
+        });
+    } else {
+        // Web workers are not supported by your browser
+        document.getElementById("timer").innerHTML = "Sorry, your browser does not support Web Workers ...";
+    }
+}
+
+// function to stop the timer
+function stopTimer() {
+    w.terminate();
+    timerStart = true;
+    w = null;
+}
+</script>
+
+</html>
