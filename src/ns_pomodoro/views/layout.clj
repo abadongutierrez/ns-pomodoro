@@ -12,13 +12,22 @@
             (include-css "/css/screen.css")]
         [:body body]))
 
+(defn add-user [data]
+    (assoc data :user (session/get :user)))
+
+(defn add-flash-message [data]
+    (if (= nil (:flash data))
+        (assoc data :flash (util/get-flash!))
+        data))
+
 (defn render-page [template data partials]
     (render-resource
         (str "templates/" template ".mustache")
-        ;; add :user to the data map
-        ;; add :flash from session if it does not exist already in data
-        (let [new-data (assoc data :user (session/get :user))]
-            (if (= nil (:flash new-data)) (assoc new-data :flash (util/get-flash!))))
+        (->
+            data
+            (add-user)          ; add :user
+            (add-flash-message) ; add :flash
+        ) 
         (reduce (fn [accum pt] ;; "pt" is the name (as a keyword) of the partial.
               (assoc accum pt (slurp (io/resource (str "templates/layout/"
                                                        (name pt)
