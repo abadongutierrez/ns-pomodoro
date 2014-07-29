@@ -36,7 +36,7 @@ function workTimer(secondsLeft, pomodoroSpec) {
 function stopPomodoroAjaxCall(pomodoroSpec) {
     // stop pomodoro in server
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/tasks/" + pomodoroSpec.task.id + "/pomodoros/" + pomodoroSpec.pomodoro.id + "/end", false);
+    xmlhttp.open("POST", "/api/v1/tasks/" + pomodoroSpec.task.id + "/pomodoros/" + pomodoroSpec.pomodoro.id + "/end", false);
     xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xmlhttp.send();   
 }

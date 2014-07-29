@@ -12,6 +12,7 @@
                    [clj-time "0.7.0"]
                    [liberator "0.11.0"]
                    [cheshire "5.3.1"]]
+    :source-paths ["src/clojure"]
     :plugins [[lein-ring "0.8.10"]]
     :ring {
         :handler ns-pomodoro.handler/app

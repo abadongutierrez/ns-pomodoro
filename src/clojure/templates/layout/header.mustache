@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <title>{{title}}</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/vendor/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <script src="/vendor/jquery/1.10.2/jquery-1.10.2.js"></script>
+
+    <script src="/vendor/handlebars/1.1.2/handlebars-1.1.2.js"></script>
+
+    <script src="/vendor/ember/1.5.1/ember-1.5.1.js"></script>
+
+    <script src="/vendor/ember-data/ember-data.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="/vendor/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssbase/base-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssfonts/fonts-min.css">
+
+    <link rel="stylesheet" href="/css/screen.css">
+
+    <script src="/vendor/desktop-notify-min.js"></script>
+</head>
+<body>
+
+<div class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NS Pomodoro</a>
+        </div><!-- /.navbar-header -->
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            {{#user}}
+            <ul class="nav navbar-nav">
+                <li><a href="/tasks"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                <li><a href="/tasks?new=true#/tasks"><span class="glyphicon glyphicon-th-list"></span></a></li>
+                <li><a href="/work/week"><span class="glyphicon glyphicon-calendar"></span></a></li>
+            </ul>
+            {{/user}}
+
+            {{#user}}
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user.username}} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            {{/user}}
+        </div>
+    </div><!-- /.container-fluid -->
+</div>

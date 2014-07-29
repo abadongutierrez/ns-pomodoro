@@ -1,0 +1,258 @@
+{{! Change clostache delimiters to <% %> }} {{=<% %>=}}
+<!doctype html>
+<html>
+<head>
+    <title><%title%></title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/vendor/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <script src="/vendor/jquery/1.10.2/jquery-1.10.2.js"></script>
+    <script src="/vendor/handlebars/1.1.2/handlebars-1.1.2.js"></script>
+    <script src="/vendor/ember/1.5.1/ember-1.5.1.js"></script>
+    <script src="/vendor/ember-data/ember-data.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="/vendor/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssbase/base-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssfonts/fonts-min.css">
+
+    <link rel="stylesheet" href="/css/screen.css">
+
+    <script src="/vendor/desktop-notify-min.js"></script>
+
+    <style type="text/css">
+        #countdown { width: 240px; height: 45px; }
+        .pomodoro-resting {
+            border: 1px solid #ccc;
+            background-color: lightgreen;
+        }
+        .pomodoro-working  {
+            border: 1px solid #ccc;
+            background-color: lightcoral;
+        }
+
+        .timer {
+            width:200px;
+            margin-left:auto;
+            margin-right: auto;
+            margin-top: 10px;
+            border:1px dotted gray;
+                        
+            /*font-family: 'Open Sans', sans-serif, Palatino;*/
+            font-size: 32px;
+            font-weight: 300;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 1px;
+
+        }
+
+        .bold-text {
+            font-weight: bold;
+        }
+
+        .underline-text {
+            text-decoration: underline;
+        }
+
+        .work-buttons {
+            padding: 5px 5px 15px 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script type="text/x-handlebars" data-template-name="application">
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">NS Pomodoro (new?)</a>
+                </div><!-- /.navbar-header -->
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <%#user%>
+                    <ul class="nav navbar-nav">
+                        {{#link-to 'tasks' tagName='li'}}Tasks{{/link-to}}
+                        {{#link-to 'work' tagName='li'}}Work{{/link-to}}
+                        <li><a href="#/tasks">Tasks</a></li>
+                        <li><a href="#/work">Work</a></li>
+                    </ul>
+                    <%/user%>
+
+                    <%#user%>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%user.username%> <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <%/user%>
+                </div>
+            </div><!-- /.container-fluid -->
+        </div>
+
+        <div class="container">{{outlet}}</div>
+
+        <footer class='container'>
+            <hr />
+            <p class='pull-left'>&copy; {{footer.year}} {{footer.name}}</p>
+            <p class='pull-right'><a href='#/credits'>Credits</a></p>
+        </footer>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="index">
+        <h4>{{greeting}}</h4>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="tasks">
+        <div class="container-fluid">
+            <div class="title row"><h2>{{title}}</h2></div>
+
+            <div id="div-new-task" class="row">
+                <div class="col-md-12">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            {{input id="new-task" type="text" class="form-control" value=name placeholder="Enter Task Name"}}
+                        </div>
+                        <div class="form-group">
+                            <button {{action 'createTask' this}} class="btn btn-default">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <ul class="list-group task-list">
+                    {{#each itemController='task'}}
+                        <li class="list-group-item">
+                            <div class="task">   
+                                {{#if isEditing}}
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            {{edit-task-name
+                                                class="edit form-control input-sm"
+                                                value=bufferedName
+                                                focus-out="doneEditing"
+                                                insert-newline="doneEditing"
+                                                escape-press="cancelEditing"
+                                            }}
+                                        </div>
+                                    </div>
+                                {{else}}
+                                    <h4 class="list-group-item-heading">
+                                        {{#link-to 'task' this}}
+                                            {{name}}
+                                        {{/link-to}}
+                                        <small>{{entered_date}}</small>
+                                    </h4>
+                                {{/if}}
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-lg btn-xs">
+                                    <span class="glyphicon glyphicon-unchecked"></span> Done
+                                </button>
+                                {{#link-to 'pomodoro' this class="btn btn-default btn-xs"}}
+                                    <span class="glyphicon glyphicon-time"></span> New Pomodoro
+                                {{/link-to}}
+                                <button {{action 'editName' this}} class="btn btn-default btn-xs">
+                                    <span class="glyphicon glyphicon-unchecked"></span> Edit Name
+                                </button> 
+                            </div>
+                            <div class="btn-group" style="float: right!important">
+                                <button {{action 'delete' this}} class="btn btn-default btn-xs btn-danger">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>                  
+                            </div>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="task">
+        {{partial 'taskInfo'}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="_task_info">
+        <h2 class="name">Task: {{name}}</h2>
+        <ul class="list-unstyled">
+            <li>Created: {{entered_date}}</li>
+            <li>Total pomodoros so far: {{total_pomodoros}}</li>
+            <li>ID: {{id}}</li>
+        </ul>
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="pomodoro">
+        {{partial 'taskInfo'}}
+        <div class="pomodoro-actions">
+            {{#if showStartPomodoroButton}}
+            <span id="current-pomodoro-button">
+                <button {{action 'startPomodoro'}} type="button" class="start-pomodoro-button btn btn-default btn-xs">
+                    <span class="glyphicon glyphicon-play"></span> Start Pomodoro
+                </button>
+            </span>
+            {{/if}}
+        </div>
+        {{#unless showStartPomodoroButton}}
+            <div id="countdown" class="timer pomodoro-working">{{timeText}}</div>
+        {{/unless}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="work">
+        <div class="btn-group btn-group-xs work-buttons">
+            <a {{action 'backward'}} class="btn btn-default"><span class="glyphicon glyphicon-backward"></a>
+            <a {{action 'today'}} class="btn btn-default">This Week</a>
+            <a {{action 'forward'}} class="btn btn-default"><span class="glyphicon glyphicon-forward"></a>
+        </div>
+        {{#each}}
+            <h4 class="underline-text">{{id}}</h4>
+            <ul>
+            {{#each pomodoros}}
+            <li>
+                <span class="bold-text">{{task.name}} [{{task.task_id}}]</span> - {{started_date}}, {{ended_date}}
+                {{#if ended_date}}<span class="label label-success">COMPLETED</span>{{/if}}
+                {{#unless ended_date}}<span class="label label-danger">INCOMPLETED</span>{{/unless}}
+            </li>
+            {{else}}
+                <li><span class="">Nothing to show</span></li>
+            {{/each}}
+            </ul>
+        {{/each}}
+    </script>
+
+    <!-- Scritps -->
+    <script src="/js/app.js"></script>
+    <script src="/js/router.js"></script>
+
+    <script src="/js/models/pomodoro.js"></script>
+    <script src="/js/models/task.js"></script>
+    <script src="/js/models/work.js"></script>
+
+    <script src="/js/routes/tasks.js"></script>
+    <script src="/js/routes/task.js"></script>
+    <script src="/js/routes/pomodoro.js"></script>
+    <script src="/js/routes/work.js"></script>
+
+    <script src="/js/controllers/application.js"></script>
+    <script src="/js/controllers/index.js"></script>
+    <script src="/js/controllers/task.js"></script>
+    <script src="/js/controllers/tasks.js"></script>
+    <script src="/js/controllers/pomodoro.js"></script>
+    <script src="/js/controllers/work.js"></script>
+
+    <script src="/js/views/editTaskName.js"></script>
+    
+</body>
+</html
