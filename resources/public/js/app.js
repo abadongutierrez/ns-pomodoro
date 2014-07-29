@@ -1,32 +1,39 @@
-Ember.Inflector.inflector.uncountable('work');
+(function(exports, Ember) {
+    'use strict';
 
-var NSPomodoroApp = Ember.Application.create({
-    LOG_TRANSITIONS: true
-});
+    Ember.Inflector.inflector.uncountable('work');
 
-// NSPomodoro.ApplicationAdapter = DS.FixtureAdapter.extend();
+    var NSPomodoroApp = Ember.Application.create({
+        LOG_TRANSITIONS: true
+    });
 
-NSPomodoroApp.ApplicationAdapter = DS.RESTAdapter.extend({
-    namespace: 'api/v1',
+    // NSPomodoro.ApplicationAdapter = DS.FixtureAdapter.extend();
 
-    pathForType: function(type) {
-        var returnType = this._super(type);
-        console.log("Path for type: " + type + " > " + returnType);
-        return returnType;
-    }
-});
+    NSPomodoroApp.ApplicationAdapter = DS.RESTAdapter.extend({
+        namespace: 'api/v1',
 
-// To be able to hande DS.attr('object')
-NSPomodoroApp.ObjectTransform = DS.Transform.extend({
-    deserialize: function(serialized) {
-        console.log("deserialize");
-        console.log(serialized);
-        return Ember.isNone(serialized) ? {} : serialized;
-    },
+        pathForType: function(type) {
+            var returnType = this._super(type);
+            console.log("Path for type: " + type + " > " + returnType);
+            return returnType;
+        }
+    });
 
-    serialize: function(deserialized) {
-        console.log("serialize");
-        console.log(deserialized);
-        return Ember.isNone(deserialized) ? {} : deserialized;
-    }
-});
+    // To be able to hande DS.attr('object')
+    NSPomodoroApp.ObjectTransform = DS.Transform.extend({
+        deserialize: function(serialized) {
+            console.log("deserialize");
+            console.log(serialized);
+            return Ember.isNone(serialized) ? {} : serialized;
+        },
+
+        serialize: function(deserialized) {
+            console.log("serialize");
+            console.log(deserialized);
+            return Ember.isNone(deserialized) ? {} : deserialized;
+        }
+    });
+
+    exports.NSPomodoroApp = NSPomodoroApp;
+
+})(window, Ember);
