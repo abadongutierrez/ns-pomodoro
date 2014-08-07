@@ -6,6 +6,7 @@
         worker: new Worker("/js/pomodoroWorker.js"),
         showStartPomodoroButton: true, 
         timeText: '00:00',
+        isPomodoroWorkingState: false,
 
         initPomodoroWorker: function() {
             var self = this;
@@ -16,6 +17,13 @@
                 }
                 else {
                     self.set('timeText', event.data.timerStr);
+                    if (event.data.type === "working") {
+                        self.set('isPomodoroWorkingState', true);
+                    }
+                    else if (event.data.type === "resting") {
+                        self.set('isPomodoroWorkingState', false);
+                    }
+
                     if (event.data.timerStr === "00:00") {
                         if (event.data.type === "working") {
                             console.log("Pomodoro Finished!, take a rest.");
@@ -49,6 +57,7 @@
                     };
 
                     self.set('showStartPomodoroButton', false);
+                    self.set('isPomodoroWorkingState', true);
                     // send initial message to worker and start
                     self.get('worker').postMessage({pomodoroSpec: currPomodorSpec});
                 });

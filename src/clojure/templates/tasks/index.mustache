@@ -206,7 +206,7 @@
             {{/if}}
         </div>
         {{#unless showStartPomodoroButton}}
-            <div id="countdown" class="timer pomodoro-working">{{timeText}}</div>
+            <div id="countdown" {{bind-attr class=":timer isPomodoroWorkingState:pomodoro-working:pomodoro-resting"}}>{{timeText}}</div>
         {{/unless}}
     </script>
 
