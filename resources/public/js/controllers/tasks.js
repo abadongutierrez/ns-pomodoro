@@ -1,7 +1,7 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.TasksController = Ember.ArrayController.extend({
+    App.TasksController = Ember.ArrayController.extend({
         sortProperties: ['entered_date'],
         sortAscending: false,
         title: 'Tasks',

@@ -9,7 +9,7 @@
     //     })
     // });
 
-    NSPomodoroApp.Router.map(function() {
+    App.Router.map(function() {
         this.resource('tasks', { path: '/tasks' });
         this.resource('task', { path: '/tasks/:id' });
         this.resource('pomodoro', { path: '/tasks/:id/pomodoro' })

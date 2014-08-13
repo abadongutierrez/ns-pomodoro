@@ -135,3 +135,27 @@
             (* 60 15)
             (* 60 5))))
 
+(defn get-tag-with-name [name]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn
+                ["SELECT * FROM tag WHERE name ILIKE ?" name]))))
+
+(defn create-tag [name]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/insert! conn :tag {:name name}))))
+
+(defn get-or-create-tag
+    "Search for the tag name ignoring case and either return the existing one or create a new one"
+    [name]
+    (let [tag (get-tag-with-name name)]
+        (if (nil? tag) (create-tag name) tag)))
+
+(defn get-tags-for-task [task-id]
+    (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn
+                [(str "SELECT tag.name FROM tag "
+                      "INNER JOIN task_tag ON (task_tag.tag_id = tag.tag_id) "
+                      "WHERE task_tag.task_id = ?") (util/get-long task-id)])))
+

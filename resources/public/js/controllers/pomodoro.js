@@ -1,7 +1,7 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.PomodoroController = Ember.ObjectController.extend({
+    App.PomodoroController = Ember.ObjectController.extend({
         // Pomodoro Worker
         worker: new Worker("/js/pomodoroWorker.js"),
         showStartPomodoroButton: true, 

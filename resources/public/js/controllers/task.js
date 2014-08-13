@@ -1,13 +1,17 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.TaskController = Ember.ObjectController.extend({
+    App.TaskController = Ember.ObjectController.extend({
         isEditing: false,
-        bufferedName: Ember.computed.oneWay('name'),   
+        isAddingTags: false,
+        bufferedName: Ember.computed.oneWay('name'),
+        tags: null,
+
         actions: {
             editName: function () {
                 this.set('isEditing', true);
             },
+
             doneEditing: function() {
                 var bufferedName = this.get('bufferedName').trim();
                 if (Ember.isEmpty(bufferedName)) {
@@ -27,15 +31,36 @@
                 this.set('bufferedName', bufferedName);
                 this.set('isEditing', false);
             },
+
             cancelEditing: function () {
                 this.set('bufferedName', this.get('name'));
                 this.set('isEditing', false);
             },
+
             delete: function() {
                 var answer = confirm("Are you sure of deleting this task?");
                 if (answer == true) {
                     this.removeTask();
                 }
+            },
+
+            startAddingTags: function() {
+                this.set('isAddingTags', true);
+            },
+
+            cancelAddingTags: function() {
+                this.set('isAddingTags', false);
+            },
+
+            addTags: function() {
+                if (!this.get('model.tags')) {
+                    this.get('model').set('tags', this.get('tags').split(','));
+                }
+                else {
+                    this.get('model.tags').pushObjects(this.get('tags').split(','));
+                }
+                this.set('tags', null);
+                this.set('isAddingTags', false);
             }
         },
 

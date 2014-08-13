@@ -1,7 +1,7 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.IndexController = Ember.Controller.extend({
+    App.IndexController = Ember.Controller.extend({
         greeting: 'Hola!'
     });
 
