@@ -9,7 +9,7 @@
         name: DS.attr('string'),
         total_pomodoros: DS.attr('number'),
         pomodoros: DS.hasMany('pomodoro', {async: true}),
-        tags: DS.hasMany.('tag')
+        tags: DS.attr()
     });
 
     // Change the primaryKey attribute for Task Model

@@ -141,6 +141,12 @@
             (sql/query conn
                 ["SELECT * FROM tag WHERE name ILIKE ?" name]))))
 
+(defn get-tag-with-id [id]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn
+                ["SELECT * FROM tag WHERE tag_id = ?" (util/get-long id)]))))
+
 (defn create-tag [name]
     (first
         (sql/with-db-transaction [conn db/db-connection]
@@ -158,4 +164,34 @@
                 [(str "SELECT tag.name FROM tag "
                       "INNER JOIN task_tag ON (task_tag.tag_id = tag.tag_id) "
                       "WHERE task_tag.task_id = ?") (util/get-long task-id)])))
+
+;; TODO this function needs to be private to this namespace
+(defn create-task-tag [task-id tag-id]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/insert! conn :task_tag
+                {:task_id (util/get-long task-id) :tag_id (util/get-long tag-id)}))))
+
+;; TODO private function
+(defn get-task-tags [task-id tag-id]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn
+                ["SELECT * FROM task_tag WHERE task_id = ? AND tag_id = ?"
+                    (util/get-long task-id) (util/get-long tag-id)]))))
+
+(defn task-cointains-tag? [task-id tag-name]
+    (let [tag (get-tag-with-name tag-name)]
+        (if (nil? tag) false
+            (if (not (nil? (get-task-tags task-id (:tag_id tag)))) true false))))
+
+;; TODO Encapsulate this in a single db transaction!
+(defn add-tag-to-task [tag-name task-id]
+    (let [tag (get-or-create-tag tag-name)]
+        (if (not (task-cointains-tag? task-id tag-name))
+            (create-task-tag task-id (:tag_id tag))
+            (get-task-tags task-id (:tag_id tag)))))
+
+(defn add-tags-to-task [tags task-id]
+    (vec (for [tag-name tags] (add-tag-to-task tag-name task-id))))
 

@@ -46,6 +46,8 @@
 
             startAddingTags: function() {
                 this.set('isAddingTags', true);
+
+                return false;
             },
 
             cancelAddingTags: function() {
