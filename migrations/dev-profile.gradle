@@ -1,0 +1,4 @@
+flyway {
+    url = 'jdbc:postgresql://localhost/ns_pomodoro_dev'
+    user = 'rgutierrez'
+}

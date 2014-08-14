@@ -1,8 +1,9 @@
 (ns ns-pomodoro.models.db
-    (:import java.sql.DriverManager))
+    (:import java.sql.DriverManager)
+    (:require [environ.core :refer [env]]))
 
 (def db-connection {:classname "org.sqlite.JDBC",
                     :subprotocol "postgresql",
-                    :subname "//localhost/ns_pomodoro"
+                    :subname (env :db-url)
                     :user "rgutierrez"
                     :password ""})
