@@ -11,14 +11,14 @@ You will need [Leiningen][1] 1.7.0 or above installed.
 ## Migrate DB
 
 ```
-gradle flywayMigrate -i
+gradle -Pprofile=dev flywayMigrate -i
 ```
 
 ## Running
 
 To start a web server for the application, run:
 
-    lein ring server
+    lein with-profile dev ring server
 
 Or start REPL:
 
