@@ -11,7 +11,4 @@ buildscript {
 apply plugin: 'flyway'
 apply plugin: 'java'
 
-flyway {
-    url = 'jdbc:postgresql://localhost/ns_pomodoro'
-    user = 'rgutierrez'
-}
+apply from: "${profile}-profile.gradle"

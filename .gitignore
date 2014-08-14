@@ -12,3 +12,5 @@ pom.xml
 /migrations/build
 /migrations/.gradle
 .lein-repl-history
+/node_modules
+.gradletasknamecache
