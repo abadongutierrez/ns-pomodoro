@@ -24,7 +24,9 @@
                 } else {
                     var task = this.get('model');
                     task.set('name', bufferedName);
-                    task.save();
+                    task.save().then(function(post) {
+                        task.reload();
+                    });
                 }
 
                 // Re-set our newly edited title to persist its trimmed version
@@ -46,7 +48,6 @@
 
             startAddingTags: function() {
                 this.set('isAddingTags', true);
-
                 return false;
             },
 
@@ -55,14 +56,40 @@
             },
 
             addTags: function() {
-                if (!this.get('model.tags')) {
-                    this.get('model').set('tags', this.get('tags').split(','));
+                var task = this.get('model');
+
+                if (!task.get('tags')) {
+                    task.set('tags', this.get('tags').split(','));
                 }
                 else {
-                    this.get('model.tags').pushObjects(this.get('tags').split(','));
+                    task.get('tags').pushObjects(this.get('tags').split(','));
                 }
+
+                // TODO Avoid the reload
+                task.save().then(function(post) {
+                    task.reload();
+                });
+
                 this.set('tags', null);
                 this.set('isAddingTags', false);
+            },
+
+            deleteTag: function(tag) {
+                var task = this.get('model'), //
+                    taskTags = task.get('tags'), //
+                    index = null;
+
+                if (taskTags) {
+                    index = taskTags.indexOf(tag);
+                    if (index >= 0) {
+                        taskTags.removeAt(index);
+                    }
+                }
+
+                // TODO Avoid the reload
+                task.save().then(function(post) {
+                    task.reload();
+                });
             }
         },
 

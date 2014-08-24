@@ -27,9 +27,11 @@
                     if (event.data.timerStr === "00:00") {
                         if (event.data.type === "working") {
                             console.log("Pomodoro Finished!, take a rest.");
+                            alert('Pomodoro Finished!, take a rest.');
                         }
                         else if (event.data.type === "resting") {
                             console.log("Enough resting, go back to work.");
+                            alert('Enough resting, go back to work.');
                             self.setProperties({
                                 showStartPomodoroButton: true
                             });

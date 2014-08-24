@@ -222,7 +222,7 @@
                                     <span class="label label-primary tag">
                                         <span class="glyphicon glyphicon-tag"></span>
                                         {{tag}}
-                                        <span data-role="remove-tag"></span>
+                                        <span data-role="remove-tag" {{action 'deleteTag' tag}}></span>
                                     </span>
                                 {{/each}}
                             </div>

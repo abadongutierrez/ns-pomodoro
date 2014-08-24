@@ -114,12 +114,16 @@
         #(let [data (::data %)
                task (:task data)
                name (:name task)
-               is_done (:is_done task)]
+               is_done (:is_done task)
+               tags (if (nil? (:tags task)) [] (:tags task))]
             (do
+                (tasks/remove-all-tags-in-task task-id)
+                (tasks/add-tags-to-task tags task-id)
                 (if-not (nil? name)
                   (tasks/update-task-name name task-id))
                 (if (= true is_done)
                   (tasks/finish-task task-id)))
+                (.println System/out (tasks/get-task task-id))
                 ;; Reset ::entry in context
                 {::entry (tasks/get-task task-id)}
                 ;; Include the updated entity in the response
