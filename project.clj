@@ -25,14 +25,17 @@
     }
     :aot :all
     :profiles {
-        :production {
+        :prod {
             :ring {
                 :open-browser? false 
                 :stacktraces? false 
                 :auto-reload? false
             }
             :env {
-                :db-url "//localhost/ns_pomodoro_dev"
+                :db-url "//localhost/ns_pomodoro"
+                :work-time 25
+                :rest-time 5
+                :rest-time-after-4-pomodoros 15
             }
         }
         :dev {
@@ -44,6 +47,9 @@
                 [ring/ring-devel "1.2.1"]]
             :env {
                 :db-url "//localhost/ns_pomodoro_dev"
+                :work-time 1
+                :rest-time 1
+                :rest-time-after-4-pomodoros 1
             }
         }
     })

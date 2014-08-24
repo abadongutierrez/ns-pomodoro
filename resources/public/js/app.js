@@ -34,6 +34,16 @@
         }
     });
 
+    NSPomodoroApp.RawTransform = DS.Transform.extend({
+        deserialize: function(serialized) {
+            return serialized;
+        },  
+
+        serialize: function(deserialized) {
+            return deserialized;
+        }
+    });
+
     exports.NSPomodoroApp = NSPomodoroApp;
 
 })(window, Ember);

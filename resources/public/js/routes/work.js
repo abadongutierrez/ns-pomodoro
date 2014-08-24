@@ -1,7 +1,7 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.WorkRoute = Ember.Route.extend({
+    App.WorkRoute = Ember.Route.extend({
         model: function() {
             return this.store.find('work');
         }

@@ -3,7 +3,75 @@
               [clj-time.format :as f]
               [clj-time.core :as t]
               [ns-pomodoro.models.db :as db]
-              [ns-pomodoro.models.util :as util]))
+              [ns-pomodoro.models.util :as util]
+              [environ.core :refer [env]]))
+
+(defn get-tag-with-name [name]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn
+                ["SELECT * FROM tag WHERE name ILIKE ?" name]))))
+
+(defn get-tag-with-id [id]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn
+                ["SELECT * FROM tag WHERE tag_id = ?" (util/get-long id)]))))
+
+(defn create-tag [name]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/insert! conn :tag {:name name}))))
+
+(defn get-or-create-tag
+    "Search for the tag name ignoring case and either return the existing one or create a new one"
+    [name]
+    (let [tag (get-tag-with-name name)]
+        (if (nil? tag) (create-tag name) tag)))
+
+(defn get-tags-for-task [task-id]
+    (vec
+        (map #(:name %)
+            (sql/with-db-transaction [conn db/db-connection]
+                (sql/query conn
+                    [(str "SELECT tag.name FROM tag "
+                          "INNER JOIN task_tag ON (task_tag.tag_id = tag.tag_id) "
+                          "WHERE task_tag.task_id = ?") (util/get-long task-id)])))))
+
+(defn remove-all-tags-in-task [task-id]
+    (sql/with-db-transaction [conn db/db-connection]
+        (sql/delete! conn :task_tag
+            ["task_id = ?" (util/get-long task-id)])))
+
+;; TODO this function needs to be private to this namespace
+(defn create-task-tag [task-id tag-id]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/insert! conn :task_tag
+                {:task_id (util/get-long task-id) :tag_id (util/get-long tag-id)}))))
+
+;; TODO private function
+(defn get-task-tags [task-id tag-id]
+    (first
+        (sql/with-db-transaction [conn db/db-connection]
+            (sql/query conn
+                ["SELECT * FROM task_tag WHERE task_id = ? AND tag_id = ?"
+                    (util/get-long task-id) (util/get-long tag-id)]))))
+
+(defn task-cointains-tag? [task-id tag-name]
+    (let [tag (get-tag-with-name tag-name)]
+        (if (nil? tag) false
+            (if (not (nil? (get-task-tags task-id (:tag_id tag)))) true false))))
+
+;; TODO Encapsulate this in a single db transaction!
+(defn add-tag-to-task [tag-name task-id]
+    (let [tag (get-or-create-tag tag-name)]
+        (if (not (task-cointains-tag? task-id tag-name))
+            (create-task-tag task-id (:tag_id tag))
+            (get-task-tags task-id (:tag_id tag)))))
+
+(defn add-tags-to-task [tags task-id]
+    (vec (for [tag-name tags] (add-tag-to-task tag-name task-id))))
 
 (defn get-pomodoros [task-id]
     (sql/with-db-transaction [conn db/db-connection]
@@ -17,18 +85,24 @@
     (let [pomodoros (get-pomodoros-id (:task_id task))]
         (assoc task :pomodoros pomodoros :total_pomodoros (count pomodoros))))
 
+(defn assoc-tags-to-task [task]
+    (let [tags (get-tags-for-task (:task_id task))]
+        (assoc task :tags tags)))
+
 (defn get-not-finished-tasks [user-id]
     (let [tasks (sql/with-db-transaction [conn db/db-connection]
                     (sql/query conn 
                     ["SELECT * FROM task WHERE user_id = ? AND is_done = false ORDER BY entered_date DESC" (util/get-long user-id)]))]
-        (map #(assoc-pomodoros-to-task %) tasks)))
+        (map #(assoc-pomodoros-to-task %) tasks)
+        (map #(assoc-tags-to-task %) tasks)))
 
 (defn get-task [task-id]
     (let [task (first
                     (sql/with-db-transaction [conn db/db-connection]
                         (sql/query conn 
                         ["SELECT * FROM task WHERE task_id = ?" (util/get-long task-id)])))]
-        (assoc-pomodoros-to-task task)))
+        (assoc-pomodoros-to-task task)
+        (assoc-tags-to-task task)))
 
 (defn create-task [name user-id]
     (first
@@ -123,7 +197,7 @@
 (defn get-pomodoro-worktime-length
     "Returns the length of the working time for a Pomodoro"
     []
-    (* 60 25))
+    (* 60 (env :work-time)))
 
 (defn get-pomodoro-resttime-length
     "Returns the length of the resting time for a Pomodoro. Every 4 pomodoros the resting time is longer"
@@ -132,6 +206,5 @@
           ; if count-pomodoros is 0 is because there are no pomodoros, so the resting time cannot be of 15 minutes
           total (if (= 0 count) 1 count)]
         (if (= 0 (mod total 4))
-            (* 60 15)
-            (* 60 5))))
-
+            (* 60 (env :rest-time-after-4-pomodoros))
+            (* 60 (env :rest-time)))))

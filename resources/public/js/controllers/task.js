@@ -1,13 +1,17 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.TaskController = Ember.ObjectController.extend({
+    App.TaskController = Ember.ObjectController.extend({
         isEditing: false,
-        bufferedName: Ember.computed.oneWay('name'),   
+        isAddingTags: false,
+        bufferedName: Ember.computed.oneWay('name'),
+        tags: null,
+
         actions: {
             editName: function () {
                 this.set('isEditing', true);
             },
+
             doneEditing: function() {
                 var bufferedName = this.get('bufferedName').trim();
                 if (Ember.isEmpty(bufferedName)) {
@@ -20,22 +24,72 @@
                 } else {
                     var task = this.get('model');
                     task.set('name', bufferedName);
-                    task.save();
+                    task.save().then(function(post) {
+                        task.reload();
+                    });
                 }
 
                 // Re-set our newly edited title to persist its trimmed version
                 this.set('bufferedName', bufferedName);
                 this.set('isEditing', false);
             },
+
             cancelEditing: function () {
                 this.set('bufferedName', this.get('name'));
                 this.set('isEditing', false);
             },
+
             delete: function() {
                 var answer = confirm("Are you sure of deleting this task?");
                 if (answer == true) {
                     this.removeTask();
                 }
+            },
+
+            startAddingTags: function() {
+                this.set('isAddingTags', true);
+                return false;
+            },
+
+            cancelAddingTags: function() {
+                this.set('isAddingTags', false);
+            },
+
+            addTags: function() {
+                var task = this.get('model');
+
+                if (!task.get('tags')) {
+                    task.set('tags', this.get('tags').split(','));
+                }
+                else {
+                    task.get('tags').pushObjects(this.get('tags').split(','));
+                }
+
+                // TODO Avoid the reload
+                task.save().then(function(post) {
+                    task.reload();
+                });
+
+                this.set('tags', null);
+                this.set('isAddingTags', false);
+            },
+
+            deleteTag: function(tag) {
+                var task = this.get('model'), //
+                    taskTags = task.get('tags'), //
+                    index = null;
+
+                if (taskTags) {
+                    index = taskTags.indexOf(tag);
+                    if (index >= 0) {
+                        taskTags.removeAt(index);
+                    }
+                }
+
+                // TODO Avoid the reload
+                task.save().then(function(post) {
+                    task.reload();
+                });
             }
         },
 

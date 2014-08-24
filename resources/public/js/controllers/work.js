@@ -1,7 +1,7 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.WorkController = Ember.ArrayController.extend({
+    App.WorkController = Ember.ArrayController.extend({
         offset: 0,
 
         actions: {

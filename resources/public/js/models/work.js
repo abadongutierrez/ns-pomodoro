@@ -1,13 +1,13 @@
 (function(App, Ember, DS) {
     'use strict';
 
-    NSPomodoroApp.Work = DS.Model.extend({
+    App.Work = DS.Model.extend({
         day: DS.attr('string'),
         pomodoros: DS.attr('object')
     });
 
     // Change the primaryKey attribute for Pomodoro Model
-    NSPomodoroApp.WorkSerializer = DS.RESTSerializer.extend({
+    App.WorkSerializer = DS.RESTSerializer.extend({
         primaryKey: 'day',
 
         extractArray: function(store, type, payload) {
