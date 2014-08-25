@@ -159,74 +159,76 @@
             <div class="row">
                 <ul class="list-group task-list">
                     {{#each itemController='task'}}
-                        <li class="list-group-item">
-                            <div class="task-container">
-                                <div class="task">   
-                                    {{#if isEditing}}
-                                        <div class="form-inline">
-                                            <div class="form-group">
-                                                {{edit-text-field
-                                                    class="edit form-control input-sm task-name-editor"
-                                                    value=bufferedName
-                                                    focus-out="doneEditing"
-                                                    insert-newline="doneEditing"
-                                                    escape-press="cancelEditing"
-                                                }}
+                        {{#unless is_done}}
+                            <li class="list-group-item">
+                                <div class="task-container">
+                                    <div class="task">   
+                                        {{#if isEditing}}
+                                            <div class="form-inline">
+                                                <div class="form-group">
+                                                    {{edit-text-field
+                                                        class="edit form-control input-sm task-name-editor"
+                                                        value=bufferedName
+                                                        focus-out="doneEditing"
+                                                        insert-newline="doneEditing"
+                                                        escape-press="cancelEditing"
+                                                    }}
+                                                </div>
                                             </div>
-                                        </div>
-                                    {{else}}
-                                        <h4 class="list-group-item-heading">
-                                            {{#link-to 'task' this}}
-                                                {{name}}
-                                            {{/link-to}}
-                                            <small>{{entered_date}}</small>
-                                        </h4>
-                                    {{/if}}
-                                </div>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-lg btn-xs">
-                                        <span class="glyphicon glyphicon-unchecked"></span> Done
-                                    </button>
-                                    {{#link-to 'pomodoro' this class="btn btn-default btn-xs"}}
-                                        <span class="glyphicon glyphicon-time"></span> New Pomodoro
-                                    {{/link-to}}
-                                    <button {{action 'editName' this}} class="btn btn-default btn-xs">
-                                        <span class="glyphicon glyphicon-unchecked"></span> Edit Name
-                                    </button> 
-                                </div>
-                                {{#if isAddingTags}}
-                                    <div class="btn-group">
-                                        {{edit-text-field
-                                            class="edit form-control input-sm tags-text-field"
-                                            value=tags
-                                            focus-out="cancelAddingTags"
-                                            insert-newline="addTags"
-                                            escape-press="cancelAddingTags"
-                                            placeholder="Add tags separated by ','"}}
+                                        {{else}}
+                                            <h4 class="list-group-item-heading">
+                                                {{#link-to 'task' this}}
+                                                    {{name}}
+                                                {{/link-to}}
+                                                <small>{{entered_date}}</small>
+                                            </h4>
+                                        {{/if}}
                                     </div>
-                                {{else}}
                                     <div class="btn-group">
-                                        <button {{action 'startAddingTags' this}} class="btn btn-default btn-lg btn-xs">
-                                            <span class="glyphicon glyphicon-tags"></span> Add Tag
+                                        <button {{action 'done' this}} class="btn btn-default btn-xs">
+                                            <span class="glyphicon glyphicon-unchecked"></span> Done
+                                        </button>
+                                        {{#link-to 'pomodoro' this class="btn btn-default btn-xs"}}
+                                            <span class="glyphicon glyphicon-time"></span> New Pomodoro
+                                        {{/link-to}}
+                                        <button {{action 'editName' this}} class="btn btn-default btn-xs">
+                                            <span class="glyphicon glyphicon-unchecked"></span> Edit Name
                                         </button> 
                                     </div>
-                                {{/if}}
-                                <div class="btn-group" style="float: right!important">
-                                    <button {{action 'delete' this}} class="btn btn-default btn-xs btn-danger">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>                  
+                                    {{#if isAddingTags}}
+                                        <div class="btn-group">
+                                            {{edit-text-field
+                                                class="edit form-control input-sm tags-text-field"
+                                                value=tags
+                                                focus-out="cancelAddingTags"
+                                                insert-newline="addTags"
+                                                escape-press="cancelAddingTags"
+                                                placeholder="Add tags separated by ','"}}
+                                        </div>
+                                    {{else}}
+                                        <div class="btn-group">
+                                            <button {{action 'startAddingTags' this}} class="btn btn-default btn-lg btn-xs">
+                                                <span class="glyphicon glyphicon-tags"></span> Add Tag
+                                            </button> 
+                                        </div>
+                                    {{/if}}
+                                    <div class="btn-group" style="float: right!important">
+                                        <button {{action 'delete' this}} class="btn btn-default btn-xs btn-danger">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>                  
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="tags-container">
-                                {{#each tag in model.tags}}
-                                    <span class="label label-primary tag">
-                                        <span class="glyphicon glyphicon-tag"></span>
-                                        {{tag}}
-                                        <span data-role="remove-tag" {{action 'deleteTag' tag}}></span>
-                                    </span>
-                                {{/each}}
-                            </div>
-                        </li>
+                                <div class="tags-container">
+                                    {{#each tag in model.tags}}
+                                        <span class="label label-primary tag">
+                                            <span class="glyphicon glyphicon-tag"></span>
+                                            {{tag}}
+                                            <span data-role="remove-tag" {{action 'deleteTag' tag}}></span>
+                                        </span>
+                                    {{/each}}
+                                </div>
+                            </li>
+                        {{/unless}}
                     {{/each}}
                 </ul>
             </div>

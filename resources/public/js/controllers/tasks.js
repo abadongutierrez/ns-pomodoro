@@ -24,7 +24,6 @@
 
                 this.set('name', '');
                 tasks = this.store.find('task');
-                tasks.reload();
                 this.set('content', tasks);
             }
         }

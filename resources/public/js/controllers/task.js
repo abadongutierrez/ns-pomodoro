@@ -90,6 +90,15 @@
                 task.save().then(function(post) {
                     task.reload();
                 });
+            },
+
+            done: function() {
+                var task = this.get('model');
+                task.set('is_done', true);
+                // TODO Avoid the reload
+                task.save().then(function(post) {
+                    task.reload();
+                });
             }
         },
 
