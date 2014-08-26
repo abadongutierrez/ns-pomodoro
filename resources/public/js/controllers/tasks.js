@@ -6,11 +6,14 @@
         sortAscending: false,
         title: 'Tasks',
         name: null,
+        tagsStr: "",
+
         actions: {
             createTask: function() {
                 var name = null,
                     task = null,
-                    tasks = null;
+                    tasks = null,
+                    self = this;
 
                 name = this.get('name').trim();
                 if (!name) {
@@ -23,8 +26,20 @@
                 task.save();
 
                 this.set('name', '');
-                tasks = this.store.find('task');
-                this.set('content', tasks);
+                this.store.find('task').then(function(data) {
+                    self.set('content', data);    
+                });
+            },
+
+            filterByTags: function() {
+                var self = this, //
+                    tasks = null, //
+                    tagsStr = this.get('tagsStr'), //
+                    tags = tagsStr.trim().length > 0 ? tagsStr.split(',') : [];
+                console.log(tags);
+                this.store.find('task', { filterTags: tags }).then(function(data) {
+                    self.set('content', data);
+                });
             }
         }
     });

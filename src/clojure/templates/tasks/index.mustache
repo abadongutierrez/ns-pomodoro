@@ -84,6 +84,10 @@
         .task-name-editor {
             min-width: 600px;
         }
+
+        .tags-input {
+            width: 80% !important;
+        }
     </style>
 </head>
 
@@ -152,6 +156,19 @@
                         <div class="form-group">
                             <button {{action 'createTask' this}} class="btn btn-default">Add</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-tags row">
+                <div class="col-md-12">
+                    <div>
+                        <span>
+                            {{input type="text" class="form-control tags-input" value=tagsStr placeholder="Enter Tags to Filter divided by ','"}}
+                        </span>
+                        <span>
+                            <button {{action 'filterByTags' this}} class="btn btn-default">Filter</button>
+                        </span>
                     </div>
                 </div>
             </div>

@@ -57,6 +57,11 @@
                 (:uri request)
                 (str id))))
 
+(defn contains-all-tags? [task tags-to-filter]
+    (let [task-tags (:tags task)
+          mapping (map #(some (fn [tag] (= % tag)) task-tags) tags-to-filter)]
+        (every? #(= true %) mapping)))
+
 ;; SIDE-NOTE: You can use #() when you use % inside the function, if not you have to use (fn ...)
 
 (defresource list-tasks
@@ -69,9 +74,13 @@
     :malformed? #(parse-json % ::data)
     ;; GET
     :handle-ok 
-        (fn [_]
-            (let [tasks (tasks/get-not-finished-tasks (util/user-id))]
-                (generate-string {:tasks tasks :meta {:total (count tasks)}})))
+        (fn [ctx]
+            (let [tags-to-filter (get-in ctx [:request :params :filterTags])
+                  tasks (tasks/get-not-finished-tasks (util/user-id))
+                  filtered-tasks (vec (filter #(= true (contains-all-tags? % tags-to-filter)) tasks))]
+                (.println System/out (str tags-to-filter))
+                (.println System/out (str filtered-tasks))
+                (generate-string {:tasks filtered-tasks :meta {:total (count filtered-tasks)}})))
     ;; POST
     :post!
         #(let [data (::data %)
