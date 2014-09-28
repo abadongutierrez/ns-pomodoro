@@ -50,6 +50,7 @@
                 :work-time 1
                 :rest-time 1
                 :rest-time-after-4-pomodoros 1
+                :dev-mode? true
             }
         }
     })

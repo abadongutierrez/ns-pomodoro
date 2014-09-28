@@ -88,12 +88,19 @@
         .tags-input {
             width: 80% !important;
         }
+
+        .dev-bar {
+            text-align: center;
+            background: yellow;
+            border-style: ridge;
+        }
     </style>
 </head>
 
 <body>
 
     <script type="text/x-handlebars" data-template-name="application">
+        <%#dev-mode%><div class="dev-bar">Dev</div><%/dev-mode%>
         <div class="navbar navbar-default" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -323,7 +330,6 @@
     <script src="/js/controllers/pomodoro.js"></script>
     <script src="/js/controllers/work.js"></script>
 
-    <script src="/js/views/editTextField.js"></script>
-    
+    <script src="/js/views/editTextField.js"></script>   
 </body>
 </html

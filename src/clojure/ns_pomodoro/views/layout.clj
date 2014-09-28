@@ -3,7 +3,8 @@
             [clostache.parser :refer [render-resource]]
             [clojure.java.io :as io]
             [noir.session :as session]
-            [ns-pomodoro.views.util :as util]))
+            [ns-pomodoro.views.util :as util]
+            [environ.core :refer [env]]))
 
 (defn common [& body]
     (html5
@@ -14,6 +15,9 @@
 
 (defn add-user [data]
     (assoc data :user (session/get :user)))
+
+(defn add-mode [data]
+    (assoc data :dev-mode (env :dev-mode?)))
 
 (defn add-flash-message [data]
     (if (= nil (:flash data))
@@ -27,6 +31,7 @@
             data
             (add-user)          ; add :user
             (add-flash-message) ; add :flash
+            (add-mode)
         ) 
         (reduce (fn [accum pt] ;; "pt" is the name (as a keyword) of the partial.
               (assoc accum pt (slurp (io/resource (str "templates/layout/"
@@ -44,4 +49,5 @@
         (->
             data
             (add-user)          ; add :user
+            (add-mode)
         )))

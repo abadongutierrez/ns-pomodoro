@@ -23,8 +23,18 @@
     <link rel="stylesheet" href="/css/screen.css">
 
     <script src="/vendor/desktop-notify-min.js"></script>
+
+    <style type="text/css">
+        .dev-bar {
+            text-align: center;
+            background: yellow;
+            border-style: ridge;
+        }
+    </style>
 </head>
 <body>
+
+{{#dev-mode}}<div class="dev-bar">Dev</div>{{/dev-mode}}
 
 <div class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
