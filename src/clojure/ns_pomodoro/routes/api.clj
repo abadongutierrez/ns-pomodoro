@@ -105,7 +105,7 @@
     :existed?
         (fn [_] (nil? (tasks/get-task task-id)))
     :malformed? #(parse-json % ::data)
-    :handle-ok #(generate-string {:task (::entry %)})
+    :handle-ok (fn [_] (generate-string {:task (tasks/get-task task-id)}))
     ;; DELETE
     :delete!
         (fn [_]
@@ -131,12 +131,9 @@
                 (if-not (nil? name)
                   (tasks/update-task-name name task-id))
                 (if (= true is_done)
-                  (tasks/finish-task task-id)))
-                (.println System/out (tasks/get-task task-id))
-                ;; Reset ::entry in context
-                {::entry (tasks/get-task task-id)}
+                  (tasks/finish-task task-id))
                 ;; Include the updated entity in the response
-                {::respond-with-entity true})
+                {::respond-with-entity true}))
     ;; Indicates if in the response the entity (::entry) is going to be included
     :respond-with-entity? #(::respond-with-entity %)
     :new?

@@ -24,9 +24,7 @@
                 } else {
                     var task = this.get('model');
                     task.set('name', bufferedName);
-                    task.save().then(function(post) {
-                        task.reload();
-                    });
+                    task.save();
                 }
 
                 // Re-set our newly edited title to persist its trimmed version
@@ -65,10 +63,7 @@
                     task.get('tags').pushObjects(this.get('tags').split(','));
                 }
 
-                // TODO Avoid the reload
-                task.save().then(function(post) {
-                    task.reload();
-                });
+                task.save();
 
                 this.set('tags', null);
                 this.set('isAddingTags', false);
@@ -86,19 +81,14 @@
                     }
                 }
 
-                // TODO Avoid the reload
-                task.save().then(function(post) {
-                    task.reload();
-                });
+                task.save();
             },
 
             done: function() {
                 var task = this.get('model');
                 task.set('is_done', true);
-                // TODO Avoid the reload
-                task.save().then(function(post) {
-                    task.reload();
-                });
+
+                task.save();
             }
         },
 
