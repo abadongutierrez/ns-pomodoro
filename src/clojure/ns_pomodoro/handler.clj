@@ -3,8 +3,6 @@
             [compojure.route :as route]
             [noir.util.middleware :as noir-middleware]
             [ns-pomodoro.routes.home :refer [home-routes]]
-            [ns-pomodoro.routes.task :refer [task-routes]]
-            [ns-pomodoro.routes.work :refer [work-routes]]
             [ns-pomodoro.routes.auth :refer [auth-routes]]
             [ns-pomodoro.routes.api :refer [api-routes]]))
 
@@ -19,6 +17,6 @@
   (route/not-found "Not Found"))
 
 (def app (noir-middleware/app-handler [
-    home-routes task-routes work-routes auth-routes api-routes app-routes]))
+    home-routes auth-routes api-routes app-routes]))
 
 

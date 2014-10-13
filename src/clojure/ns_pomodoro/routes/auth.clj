@@ -71,7 +71,7 @@
             (session/put! :user {:user-id (:user_id user) :username (:username user) :email (:email user)})
             ;; TODO IDEA Change the greeting randomly
             (util/set-success-flash! "Welcome back!")
-            (resp/redirect "/tasks"))
+            (resp/redirect "/"))
         (do
             (util/set-warning-flash! "There is no user with that username/password")
             (resp/redirect "/"))))
