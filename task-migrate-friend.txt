@@ -1,0 +1,8 @@
+Migration to friend (without user roles)
+
+* Update users table with the password generated using the (hash-bcrypt) function
+* Update (ns-pomodoro.models.user.create-user) function to store users using (hash-bcrypt) function
+* Remove (ns-pomodoro.routes.auth.login) function since friend is handling that
+* Remove (ns-pomodoro.routes.auth.logout) function since friend is handling that
+* Find a way to get the user from the session to use it in the (ns-pomodoro.views.layout) namespace
+* 
