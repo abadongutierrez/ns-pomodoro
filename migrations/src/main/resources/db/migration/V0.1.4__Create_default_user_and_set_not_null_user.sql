@@ -1,5 +1,5 @@
 INSERT INTO public.user(username, email, password)
-    VALUES('default', 'default@mail.com', crypt('password', gen_salt('bf')));
+    VALUES('default', 'default@mail.com', 'password');
 
 UPDATE public.task
     SET user_id = (SELECT user_id FROM public.user WHERE username = 'default');

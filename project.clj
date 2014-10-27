@@ -13,7 +13,8 @@
         [clj-time "0.7.0"]
         [liberator "0.11.0"]
         [cheshire "5.3.1"]
-        [environ "0.5.0"]]
+        [environ "0.5.0"]
+        [com.cemerick/friend "0.2.1"]]
     :source-paths ["src/clojure"]
     :plugins [
         [lein-ring "0.8.10"]

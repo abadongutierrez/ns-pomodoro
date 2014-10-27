@@ -6,7 +6,8 @@
               [noir.util.crypt :as crypt]
               [ns-pomodoro.views.layout :as layout]
               [ns-pomodoro.models.user :as user]
-              [ns-pomodoro.views.util :as util]))
+              [ns-pomodoro.views.util :as util]
+              [cemerick.friend :as friend]))
 
 (defn error-map [[error]]
     {:is true :text error})
@@ -84,4 +85,4 @@
     (GET "/register" [] (show-registration))
     (POST "/register" [username email password password2] (handle-registration username email password password2))
     (POST "/login" [username password] (login username password))
-    (GET "/logout" [] (logout)))
+    (GET "/logout" req (friend/logout* (resp/redirect (str (:context req) "/")))))

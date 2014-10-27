@@ -8,7 +8,7 @@
         (sql/with-db-transaction [conn db/db-connection]
           (sql/execute! conn
               [(str "INSERT INTO nsp_user(username, email, password)"
-                  " VALUES(?, ?, crypt(?, gen_salt('bf')))") username email password]))
+                  " VALUES(?, ?, ?)") username email password]))
         ; execute! throws java.sql.BatchUpdateException and since we are executing just
         ; one insert we just get the next exception
         (catch java.sql.BatchUpdateException ex
@@ -28,5 +28,5 @@
                       " FROM nsp_user" 
                       " WHERE username = ?"
                       " AND password is NOT NULL"
-                      " AND password = crypt(?, password)") username password])))]
+                      " AND password = ?") username password])))]
         (if (= (:total total) 1) true false)))
