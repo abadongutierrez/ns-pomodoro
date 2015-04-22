@@ -5,5 +5,5 @@
 (def db-connection {:classname "org.sqlite.JDBC",
                     :subprotocol "postgresql",
                     :subname (env :db-url)
-                    :user "rgutierrez"
+                    :user "postgres"
                     :password ""})
